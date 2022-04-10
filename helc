@@ -1,0 +1,38 @@
+require "Hellenna.env.paroot-environment"
+local parser_path_unix  = "Hellenna/parser/parser.lua"
+local parser_path_win32 = parser_path_unix:gsub("/","\\")
+
+-- lua ocamlc <file> -o <release>
+-- lua ocamlc <file> -b <release
+
+
+--@transpile to Perl 5 (.pl)
+function go_transpile()
+    os.execute("lua "..parser_path_win32.." "..arg[1].." -o "..arg[3]..".o")
+    os.execute("lua "..arg[3]..".o")
+end
+
+
+--@autorun
+function go_run()
+    os.execute("lua "..parser_path_win32.." "..arg[1].." -o "..arg[3]..".o")
+    os.execute("lua "..arg[3]..".o")
+    os.execute("perl "..arg[3]..".pl")
+end
+
+
+--@logic
+if arg[2] == "-o" or arg[2] == "--transpile" then
+    go_transpile()
+
+elseif arg[2] == "--run" then
+    go_run()
+
+else
+    print("\nTranslate to Perl 5 source code  (.pl):          lua helc <source> --transpile <out>")
+    print("Build and run namespace:                         lua helc <source> --run <out>\n")
+    
+    print("<source> = foo.x")
+    print("<out> = foo\n\n")
+
+end
